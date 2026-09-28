@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="section">
+  <div class="section-head">
+    <div><h2>📋 Riwayat Penjualan</h2><p class="muted">Transaksi dikelompokkan berdasarkan tanggal dan invoice. 1 checkout = 1 invoice.</p></div>
+  </div>
+  <form class="filter">
+    <label>Dari<input type="date" name="start" value="{{start}}"></label>
+    <label>Sampai<input type="date" name="end" value="{{end}}"></label>
+    <button class="btn">Tampilkan</button>
+    <a class="btn secondary" href="{{url_for('export_penjualan_xlsx',start=start,end=end)}}">⬇ Excel</a>
+    <a class="btn secondary" href="{{url_for('export_penjualan_pdf',start=start,end=end)}}">⬇ PDF</a>
+  </form>
+
+  <div class="cards">
+    <div class="card"><span>Total Transaksi / Invoice</span><strong>{{total_tx}}</strong></div>
+    <div class="card"><span>Total Item / Qty Terjual</span><strong>{{total_qty}}</strong></div>
+    <div class="card"><span>Total Baris Menu</span><strong>{{total_menu}}</strong></div>
+    <div class="card success"><span>Grand Total Penjualan</span><strong>Rp {{"{:,.0f}".format(total_sales).replace(",", ".")}}</strong></div>
+  </div>
+
+  {% for g in groups %}
+    {% if loop.first or groups[loop.index0-1]["day"] != g["day"] %}
+      <div style="margin-top:22px;margin-bottom:8px"><h3 style="margin:0">Tanggal: {{g["day"]}}</h3></div>
+    {% endif %}
+    <div class="table-wrap" style="margin-bottom:14px">
+      <div style="padding:10px 12px;font-weight:700;background:#f5f5f5;border-bottom:1px solid #ddd">Invoice {{g["invoice"]}}</div>
+      <table>
+        <thead><tr><th>Menu</th><th>Qty</th><th>Harga Satuan</th><th>Total</th></tr></thead>
+        <tbody>
+          {% for item in g["items"] %}
+          <tr><td>{{item["menu_name"]}}</td><td>{{item["qty"]}}</td><td>Rp {{"{:,.0f}".format(item["price"]).replace(",", ".")}}</td><td><b>Rp {{"{:,.0f}".format(item["line_total"]).replace(",", ".")}}</b></td></tr>
+          {% endfor %}
+          <tr><td><b>Total Invoice {{g["invoice"]}}</b></td><td><b>{{g["total_qty"]}}</b></td><td></td><td><b>Rp {{"{:,.0f}".format(g["total"]).replace(",", ".")}}</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="table-wrap"><table><tbody><tr><td>Belum ada transaksi pada periode ini.</td></tr></tbody></table></div>
+  {% endfor %}
+
+  <div style="margin-top:24px">
+    <h3>Grand Total</h3>
+    <div class="table-wrap"><table>
+      <tbody>
+        <tr><th>Total Transaksi / Invoice</th><td>{{total_tx}}</td></tr>
+        <tr><th>Total Item / Qty Terjual</th><td>{{total_qty}}</td></tr>
+        <tr><th>Total Penjualan</th><td><b>Rp {{"{:,.0f}".format(total_sales).replace(",", ".")}}</b></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div style="margin-top:20px">
+    <h3>Rekap Menu Terjual</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Menu</th><th>Total Terjual</th></tr></thead>
+      <tbody>
+        {% for menu, qty in menu_counts|dictsort %}
+        <tr><td>{{menu}}</td><td>{{qty}}</td></tr>
+        {% else %}<tr><td colspan="2">Belum ada menu terjual pada periode ini.</td></tr>{% endfor %}
+      </tbody>
+    </table></div>
+  </div>
+</div>
+{% endblock %}

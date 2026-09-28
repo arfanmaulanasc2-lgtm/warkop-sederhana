@@ -1,0 +1,12 @@
+{% extends "base.html" %}{% block content %}
+<div class="section reset-box">
+  <h2>🗑️ Reset Data Simulasi</h2>
+  <p>Fitur ini akan menghapus seluruh riwayat transaksi, bahan terpakai, dan riwayat Prophet. Stok bahan dikembalikan ke stok awal.</p>
+  <div class="notice"><b>Yang dihapus:</b> transaksi, detail transaksi, log bahan terpakai/masuk, dan riwayat Prophet.<br><b>Yang tetap:</b> master menu, resep, harga, dan akun admin.</div>
+  <form method="post" onsubmit="return confirm('Yakin ingin menghapus seluruh data simulasi dan mengembalikan stok ke stok awal?');">
+    <label>Ketik <b>RESET</b> untuk konfirmasi<input name="confirmation" autocomplete="off" required placeholder="RESET"></label>
+    <button class="btn reset-btn" type="submit">Reset Sekarang</button>
+    <a class="btn secondary" href="{{url_for('dashboard')}}">Batal</a>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "base.html" %}{% block content %}
+<div class="section"><div class="section-head"><div><h2>🍳 Resep Menu</h2><p class="muted">Setiap menu hanya ditampilkan sekali. Bahan dan takaran berada di bawah menu tersebut.</p></div></div>
+<div class="recipe-grid">
+{% for g in groups %}
+<div class="recipe-card">
+  <div class="recipe-head"><div><h3>{{g['menu_name']}}</h3><span>{{g['menu_unit']}}</span></div><strong>Rp {{ "{:,.0f}".format(g['price'] or 0).replace(",",".") }}</strong></div>
+  <div class="recipe-list">
+  {% for r in g['items'] %}<div><span>{{r['material']}}</span><b>{{"%.0f"|format(r['qty'])}} {{r['unit']}}</b></div>{% endfor %}
+  </div>
+</div>
+{% endfor %}
+</div></div>{% endblock %}
