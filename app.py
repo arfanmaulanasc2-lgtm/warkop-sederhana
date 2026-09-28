@@ -6,7 +6,10 @@ from functools import wraps
 app = Flask(__name__)
 app.secret_key = "warkop-sederhana-secret-2026"
 BASE = os.path.dirname(os.path.abspath(__file__))
-DB = os.path.join(BASE, "warkop.db")
+if os.environ.get("VERCEL"):
+    DB = "/tmp/warkop.db"
+else:
+    DB = os.path.join(BASE, "warkop.db")
 
 MENUS = [
     ("Kopi Hitam", 5000, "gelas", "Kopi bubuk, gula pasir, air mineral", "coffee"),
